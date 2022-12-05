@@ -102,14 +102,9 @@ describe('Our first suite', () => {
 
         //Cypress 'style'
         cy.contains('nb-card', 'Using the Grid').then(firstForm => { //executed cy.contains to find the locator of nb-card and HTML form which contains text 'Using the Grid' which is unique for this page //Got the result of this function and saved it into the firstForm parameter  //also can be written: like  cy.contains('nb-card', 'Using the Grid').then(function(firstForm) { <--Looks like this when written in ES5 //when you call the .then() function, the parameter of this function becomes a jquery object --- not a cypress object anymore
-
             const emailLabelFirst = firstForm.find('[for="inputEmail1"]').text() //getting text for web element, save it into the variable //in JQuery format, not a cypress format --- save it and use it later on //When you are in the JQuery format you are not able to use Cypress methods like click, type, and expect
-
             const passwordLabelFirst = firstForm.find('[for="inputPassword2"]').text() //getting text for web element, save it into the variable (again) //method, which is .text()
-
             expect(emailLabelFirst).to.equal('Email') //Doing assertion //expect is a Chai assertion library, should is from a Cypress assertion library
-
-
             expect(passwordLabelFirst).to.equal('Password') //When making assertions with JQuery elements, you will have to use the Chai library //When using should method to make assertions, you will be using the Cypress library
 
                 cy.contains('nb-card', 'Basic form').then( secondForm => {
