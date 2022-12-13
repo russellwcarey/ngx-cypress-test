@@ -2,7 +2,7 @@
 
 describe('Our first suite', () => {
 
-     it('first test', () => {
+    it('first test', () => {
 
         cy.visit('/')
         cy.contains('Forms').click()
@@ -55,22 +55,22 @@ describe('Our first suite', () => {
         //When you are using text as a locator always make sure to check the upper/lower-case of text.  
         //CSS styles can override the case/behavior of button, and the text may look different than what is in the HTML on the page
 
-        cy.contains('[status="warning"]','Sign in')
+        cy.contains('[status="warning"]', 'Sign in')
 
         cy.get('#inputEmail3')
-        //.get is searching elements in the entire DOM and you chain the .get from the 'cy'
-        .parents('form')
-        .find('button')
-        .should('contain', 'Sign in')
-        .parents('form')
-        .find('nb-checkbox')
-        //.find is to find the child elements from the parent elements 
-        // A child command must be chained after a parent because it operates on a previous subject
-        //.parents method is to locate the parents element from the current key element which you are in (would the key element be the 'cy.get()' above?)
-        //accepts the same type of selectors
-        .click()
+            //.get is searching elements in the entire DOM and you chain the .get from the 'cy'
+            .parents('form')
+            .find('button')
+            .should('contain', 'Sign in')
+            .parents('form')
+            .find('nb-checkbox')
+            //.find is to find the child elements from the parent elements 
+            // A child command must be chained after a parent because it operates on a previous subject
+            //.parents method is to locate the parents element from the current key element which you are in (would the key element be the 'cy.get()' above?)
+            //accepts the same type of selectors
+            .click()
 
-        cy.contains('nb-card','Horizontal form').find('[type="email"]')
+        cy.contains('nb-card', 'Horizontal form').find('[type="email"]')
 
 
     })
@@ -107,18 +107,20 @@ describe('Our first suite', () => {
             expect(emailLabelFirst).to.equal('Email') //Doing assertion //expect is a Chai assertion library, should is from a Cypress assertion library
             expect(passwordLabelFirst).to.equal('Password') //When making assertions with JQuery elements, you will have to use the Chai library //When using should method to make assertions, you will be using the Cypress library
 
-                cy.contains('nb-card', 'Basic form').then( secondForm => {
-                    const passwordSecondText = secondForm.find('[for="exampleInputPassword1"]').text()
-                    expect(passwordLabelFirst).to.equal(passwordSecondText)//Second cy.contains is nested inside of the first, then function and then used another then function to grab the context of the second form //The variable saved in the first function will be available and visible for each next, nested function (eg., .then(someVar =>{ }) functions) //If you put code below the '})', as is noted immediately below this comment, then passwordLabelFirst is not defined, // because it is outside of the lexical scope of that function.  The result of the previous variable will not be visible outside of the function //Since this is a JQuery format, What do you do if you want to change the context back to Cypress, and continue to write your test in Cypress format?
-                    cy.wrap(secondForm).find('[for="exampleInputPassword1"]').should('contain', 'Password')
+            cy.contains('nb-card', 'Basic form').then(secondForm => {
+                const passwordSecondText = secondForm.find('[for="exampleInputPassword1"]').text()
+                expect(passwordLabelFirst).to.equal(passwordSecondText)
+                //Second cy.contains is nested inside of the first, then function and then used another then function to grab the context of the second form //The variable saved in the first function will be available and visible for each next, nested function (eg., .then(someVar =>{ }) functions) //If you put code below the '})', as is noted immediately below this comment, then passwordLabelFirst is not defined, // because it is outside of the lexical scope of that function.  The result of the previous variable will not be visible outside of the function //Since this is a JQuery format, What do you do if you want to change the context back to Cypress, and continue to write your test in Cypress format?
 
-                })
+                cy.wrap(secondForm).find('[for="exampleInputPassword1"]').should('contain', 'Password')
 
             })
-        
+
         })
 
-    it.only('invoke command', () => {
+    })
+
+    it('invoke command', () => {
         cy.visit('/')
         cy.contains('Forms').click()
         cy.contains('Form Layouts').click()
@@ -126,21 +128,18 @@ describe('Our first suite', () => {
         //1
         cy.get('[for="exampleInputEmail1"]').should('contain', 'Email address')
 
-        //2 - got result of function, saved it as input label (jquery element) then we used a jquery method
-        // .text()  to get the text from this label, then we made the assertion to the email address
-        cy.get('[for="exampleInputEmail1"]').then( label => {
+        //2 - got result of function, saved it as input label (jquery element) then we used a jquery method //.text()  to get the text from this label, then we made the assertion to the email address
+        cy.get('[for="exampleInputEmail1"]').then(label => {
             expect(label.text()).to.equal('Email address')
+        })
 
-        //3 - pretty much the same as #2, but we used the cypress invoke method to get the text from the page
-        // then we saved this text as a parameter of our function and then we made the assertion that text was
-        // equal to Email address
-        cy.get('[for="exampleInputEmail1"]').invoke('text').then( text => {
+        //3 - pretty much the same as #2, but we used the cypress invoke method to get the text from the page // then we saved this text as a parameter of our function and then we made the assertion that text was // equal to Email address
+        cy.get('[for="exampleInputEmail1"]').invoke('text').then(text => {
             expect(text).to.equal('Email address')
+        })
 
         //4 - check to see if the checkbox is actually checked
-        // 
-        // 
-        cy.contains('nb-card','Basic form')
+        cy.contains('nb-card', 'Basic form')
             .find('nb-checkbox')
             .click()
             .find('.custom-checkbox')
@@ -149,8 +148,21 @@ describe('Our first suite', () => {
             .then(classValue => {
                 expect(classValue).to.contain('checked')
             })
-        })
-        })
     })
+    it.only('assert property', () => {
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Datepicker').click()
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then(input => {
+            cy.wrap(input).click()
+            cy.get('nb-calendar-day-picker').contains('13').click()
+            cy.wrap(input).invoke('prop', 'value').should('contain', 'Dec 13, 2022')
+        })
+
+
+    })
+
+
 
 })
