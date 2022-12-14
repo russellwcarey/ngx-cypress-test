@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+const { first } = require("rxjs-compat/operator/first")
+
 describe('Our first suite', () => {
 
     it('first test', () => {
@@ -149,7 +151,7 @@ describe('Our first suite', () => {
                 expect(classValue).to.contain('checked')
             })
     })
-    it.only('assert property', () => {
+    it('assert property', () => {
         cy.visit('/')
         cy.contains('Forms').click()
         cy.contains('Datepicker').click()
@@ -159,10 +161,52 @@ describe('Our first suite', () => {
             cy.get('nb-calendar-day-picker').contains('13').click()
             cy.wrap(input).invoke('prop', 'value').should('contain', 'Dec 13, 2022')
         })
-
-
     })
+    it('radio button', () => {
 
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
 
+        cy.contains('nb-card', 'Using the Grid').find('[type="radio"]').then(radioButtons => {
+            cy.wrap(radioButtons)
+                .first()
+                .check({ force: true })
+                .should('be.checked')
 
+            //added this in myself - if first (aka - eq(0) ) is force-checked, then eq(1) .should('not.be.checked)
+            cy.wrap(radioButtons)
+                .eq(1)
+                .should('not.be.checked')
+
+            cy.wrap(radioButtons)
+                .eq(1)
+                .check({ force: true })
+
+            cy.wrap(radioButtons)
+                .eq(0)
+                .should('not.be.checked')
+
+            cy.wrap(radioButtons)
+                .eq(2)
+                .should('be.disabled')
+        })
+    })
+    it('check boxes', () => {
+        cy.visit('/')
+        cy.contains('Modal & Overlays').click()
+        cy.contains('Toastr').click()
+
+        //cy.get('[type="checkbox"]').check({ force: true }) //.check method is only to work with the elements of type-checkbox and radio buttons //check method will work only with input elements, and the type of this input element(s) should be checkboxes or radio buttons.  //It will not work on any other type of elements.  // Check method can pick and check multiple check boxes for you. //check method can ONLY CHECK your checkbox, but cannot uncheck your checkbox.
+        cy.get('[type="checkbox"]').eq(0).click({ force: true }) //.click -- you can also use click method to work with checkboxes and radio buttons, but instructor recommends we use the check command with these types of web elements.
+        cy.get('[type="checkbox"]').eq(0).check({ force: true })
+    })
+    it.only('lists and dropdowns', () => {
+        cy.visit('/')
+
+        cy.get('nav nb-select').click()
+        cy.get('.options-list').contains('Dark').click()
+        cy.get('nav nb-select').should('contain', 'Dark')
+        cy.get('nb-layout-header nav').should('have.css', 'background-color', 'rgb(34, 43, 69)')
+    })
 })
